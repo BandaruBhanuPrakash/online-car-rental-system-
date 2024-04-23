@@ -1,0 +1,56 @@
+{% extends 'customer/base.html' %}
+{% block content %}
+<div class="w3-bar w3-large w3-black">
+  <div class="w3-bar-item w3-left w3-black">Customer Portal: {{user.username}}</div>
+  <a class="w3-bar-item w3-btn w3-teal w3-right" href="/customer_portal/logout/">Logout</a>
+  <a class="w3-bar-item w3-btn w3-teal w3-right" href="/customer_portal/manage/">Manage</a>
+  <a class="w3-ber-item w3-btn w3-teal w3-right" href="/customer_portal/search/">Search Cars</a>
+</div>
+{% csrf_token %}
+
+<div class="w3-display-container" style="height:400px;">
+  <div class="w3-display-middle">
+<h3><b>Order Completed</b></h3>
+<b>Your Vehicle Order Has Been Processed!</b><br><br>
+<b>Total Rent :</b> {{order.rent}}<br><br>
+<b>Vehicle :</b> {{order.vehicle.car_name}}<br><br>
+<b>Duration :</b> {{order.days}} days<br><br>
+<b>Car-Dealer :</b> {{order.car_dealer.car_dealer.first_name}} {{order.car_dealer.car_dealer.last_name}}<br><br>
+<b>Car-Dealer's Contact:</b> {{order.car_dealer.mobile}}<br><br>
+<button id="rzp-button1">Pay</button>
+</div>
+</div>
+
+
+
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_FOQ1egNAlDEuhn", // Enter the Key ID generated from the Dashboard
+    "amount": "{{order.rent}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp", //your business name
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{razorpay_order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+    "prefill": {
+        "name": "Gaurav Kumar", //your customer's name
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+{% endblock %}
